@@ -15,8 +15,13 @@ class Chat {
 
   get_messages(req, res, next) {
     try {
-      emitter.once('newMessage', (message) => {
-        res.json(message)
+      res.writeHead(200, {
+        Connection: 'keep-alive',
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+      })
+      emitter.on('newMessage', (message) => {
+        res.write(`data: ${JSON.stringify(message)} \n\n`)
       })
     } catch (e) {
       next(e)
