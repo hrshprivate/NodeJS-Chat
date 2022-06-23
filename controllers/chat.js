@@ -5,7 +5,7 @@ const emitter = new events.EventEmitter()
 class Chat {
   post_messages(req, res, next) {
     try {
-      const { message } = req.body
+      const message = req.body
       emitter.emit('newMessage', message)
       res.status(200).json(message)
     } catch (e) {
