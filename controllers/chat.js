@@ -1,19 +1,27 @@
 const events = require('events')
 
+const MessageModel = require('../models/message')
 const emitter = new events.EventEmitter()
 
 class Chat {
-  post_messages(req, res, next) {
+  async post_messages(req, res, next) {
     try {
-      const message = req.body
-      emitter.emit('newMessage', message)
-      res.status(200).json(message)
+      const data = req.body
+      if (data) {
+        const mess = await MessageModel.create({
+          user: data.user,
+          message: data.message,
+        })
+      }
+      console.log(data.user)
+      emitter.emit('newMessage', data)
+      res.status(200).json(data)
     } catch (e) {
       next(e)
     }
   }
 
-  get_messages(req, res, next) {
+  async get_messages(req, res, next) {
     try {
       res.writeHead(200, {
         Connection: 'keep-alive',
